@@ -15,7 +15,7 @@
 
 import React, { useState, useEffect } from 'react'
 
-const List = (props) => {
+function List  (props)  {
   // State to track the list of results from the API
   const [list, setList] = useState([])
 
@@ -84,16 +84,44 @@ const List = (props) => {
       .then((data) => {
         // Retrieve the results from the fetch call, put results in the the list state
         let result = data.hits
-        setList(result)
+        console.log(result)
+        let filterReslt = result.filter( item => {
+          if (item.title && item.url || item.story_title && item.story_url) {
+            return true
+          } else {
+            return false
+          }
+        })
+        setList(filterReslt)
       })
 
       // When the props change, this useEffect function will fire, causing list to re-render with the filtered results
   }, [props.term, props.author, props.dateStart, props.dateEnd])
 
   return (
-    <ul>
+    <ul >
       {list.map((item, index) => {
-        return <li key={index}><a href={item.url ? item.url : item.story_url}>{item.title ? item.title : item.story_title}</a></li>
+        console.log(item.url)
+        return <li key={index}>
+                  <div className="divcont">
+
+                        <div className="firstRowLi" > 
+                          <h4> {item.title ? item.title : item.story_title}</h4>
+                          <a href={item.url ? item.url : item.story_url}>{item.url || item.story_url}</a>
+                        </div>  
+
+                        <div className="secondRowLi" > 
+                          <p className="pointstag"> {item.points ? item.points : 0} points</p>
+                          <p className="spacertag">|</p> 
+                          <a className="authortag" href={item.url || item.story_url}>{item.author}</a>
+                          <p className="spacertag">|</p> 
+                          <p className="datetag">{} PLACEHOPLDER years ago</p>
+                          <p className="spacertag">|</p> 
+                          <p className="commentstag"> {item.numComments} PLACEHOLDER comments</p>
+                        </div>
+
+                    </div>
+                 </li>
       })}
     </ul>
   )
