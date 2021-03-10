@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  
 }
 
 .App-logo {
@@ -14,25 +14,226 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #83807e;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
   color: #61dafb;
 }
+.searchbar{
+  width: 100%;
+  height: 40px;
+  background-color: orange;  
+  display: flex;
+}
+.imagehead{
+  background-color: blue;
+  width: 40px;
+  height: 40px;
+}
+.settings{
+  color: aliceblue;
+}
+ul {
+  list-style-type: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+li{
+  padding-left: 15px;
+}
+h2{
+  margin: 0px;
+  font-size: 30px;
+}
+h4{
+  font-size: 15px;
+  font-style: normal;
+  font-weight: normal;
+margin: 0px;
+}
+a{
+  
+  height: 20px;
+  align-items: center;
+  color: lightgray;
+}
+.authortag{
+  color: lightgrey;
+  margin: 5px;
+}
+.pointstag{
+  margin: 5px;
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+}
+.datetag{
+  margin: 5px;
+
+}
+.commentstag{
+  margin: 5px;
+
+}
+p{
+  font-size: 8px;
+}
+.firstRowLi{
+  display: flex;
+  width: 100%;
+}
+.secondRowLi{
+  display: inline-flex;
+  color: lightgray;
+  margin: 5px;
+
+}
+.divcont{
+  margin: 10px;
+  display: block;
+  width: 100%;
+  font-size: 10px;
+}
+.spacertag{
+  margin-top: 5px;
+}
+
+
+/* 
+DROPDOWNS */
+
+.dropdowncont{
+  font-size: 15px;
+  width: 100%;
+  margin-bottom: 20px;
+  
+}
+
+  /* FIRST DROPDOWN */
+  .dropbtn {
+    background-color: lightgrey;
+    color: white;
+    padding: 8px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
   }
-  to {
-    transform: rotate(360deg);
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    height: 15px;
   }
+  .dropdown-content {
+    font-size: 15px;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  .dropdown-content a:hover {background-color: #f1f1f1}
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .dropdown:hover .dropbtn {
+    background-color: lightblue ;
+  }
+/* SECOND DROPDOWN */
+
+.dropbtna {
+  background-color: lightgrey;
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdowna {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-contenta {
+  font-size: 15px;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-contenta a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-contenta a:hover {background-color: #f1f1f1}
+
+
+.dropdowna:hover .dropdown-contenta {
+  display: block;
+}
+
+.dropdowna:hover .dropbtna {
+  background-color: lightblue ;
+}
+
+
+/* third */
+
+.dropbtnb {
+  background-color: lightgrey;
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdownb {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-contentb {
+  font-size: 15px;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-contentb a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-contentb a:hover {
+  background-color: #f1f1f1
+}
+.dropdownb:hover .dropdown-contentb {
+  display: block;
+}
+.dropdownb:hover .dropbtnb {
+  background-color: lightblue ;
 }
