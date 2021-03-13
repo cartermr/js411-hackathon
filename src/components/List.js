@@ -1,82 +1,46 @@
 /**
  * List component to make fecth request to API, track results, and display them.
  * 
- * The List will default to the top 20 most recent storys with no props passed or
- * props passed as 0 or ''
+ * Takes in a prop Object called search
+ *    : query - generic search terms
+ *    : searchType - searching by all, story, or comments
+ *    : searchTime - filter the time frame of the search, past 24 hours, past week, past month, or past year
  * 
- * This component can be passed the following props
- *  -- term: a string, general search term or word to filter list
- *  -- author: a string, the name of the author to filter list
- *  -- dateStart: a Date object, the starting date of a range of dates to filter list
- *  -- dateEnd: a Date object, the ending day or a range of dates to filter list
- * 
- * This will return a <ul> list of links
  */
 
 import React, { useState, useEffect } from 'react'
 
-function List  (props)  {
+// List component definition, destructure search out of props.search
+function List  ({search})  {
   // State to track the list of results from the API
   const [list, setList] = useState([])
 
+  // lifecycle method, runs when certain prop values passed in have changed
   useEffect(() => {
-    // Base URL of the API
-    let URL = "http://hn.algolia.com/api/v1/search_by_date?"
 
-    // If any general search terms, add to API request
-    if (props.term) {
-      URL = URL + `query=${props.term}`
+    console.log(JSON.stringify(search))
+
+    // Base URL of the API with the query term
+    let URL = ''
+    if (search.searchBy === 'date') {
+      URL = `http://hn.algolia.com/api/v1/search_by_date?query=${search.query}`
+    } else {
+      URL = `http://hn.algolia.com/api/v1/search?query=${search.query}`
     }
 
-    // If author is passed, filter results by author with other search terms
-    if (
-      props.author && URL !== "http://hn.algolia.com/api/v1/search_by_date?"
-    ) {
-      URL = URL + `&tags=author_${props.author}`
+    // Add on the search type like stories or comments
+    if (search.searchType) {
+      URL = URL + `&tags=${search.searchType}`
     }
 
-    // If author is passed alone, filter results by author only
-    if (
-      props.author && URL === "http://hn.algolia.com/api/v1/search_by_date?"
-    ) {
-      URL = URL + `tags=author_${props.author}`
+    // Filters the search by the specified time frame
+    if (search.searchTime) {
+      // Call function to get the starting value and ending values as seconds, required by API
+      const timeFrane = setTimeValues(search.searchTime)
+      URL = URL + `&numericFilters=created_at_i>${timeFrane.start},created_at_i<${timeFrane.end}`
     }
 
-    // If dateStart only and other filter options, filter by just that day, with other filter options
-    if (
-      props.dateStart && !props.dateEnd && URL !== "http://hn.algolia.com/api/v1/search_by_date?"
-    ) {
-      let start = props.dateStart.setHours(0) / 1000
-      let end = props.dateStart.setHours(23, 59, 59) / 1000
-      URL = URL + `&numericFilters=created_at_i>${start},created_at_i<${end}`
-    }
-
-    // If dateStart only, filter by just that day only
-    if (
-      props.dateStart && !props.dateEnd && URL === "http://hn.algolia.com/api/v1/search_by_date?"
-    ) {
-      let start = props.dateStart.setHours(0) / 1000
-      let end = props.dateStart.setHours(23, 59, 59) / 1000
-      URL = URL + `numericFilters=created_at_i>${start},created_at_i<${end}`
-    }
-
-    // If dateStart and dateEnd and other filter options, filter by date range, with other filter options
-    if (
-      props.dateStart && props.dateEnd && URL !== "http://hn.algolia.com/api/v1/search_by_date?"
-    ) {
-      let start = props.dateStart.setHours(0) / 1000
-      let end = props.dateEnd.setHours(23, 59, 59) / 1000
-      URL = URL + `&numericFilters=created_at_i>${start},created_at_i<${end}`
-    }
-
-    // If dateStart and dateEnd only, filter by date range only
-    if (
-      props.dateStart && props.dateEnd && URL === "http://hn.algolia.com/api/v1/search_by_date?"
-    ) {
-      let start = props.dateStart.setHours(0) / 1000
-      let end = props.dateEnd.setHours(23, 59, 59) / 1000
-      URL = URL + `numericFilters=created_at_i>${start},created_at_i<${end}`
-    }
+    console.log(URL)
 
     // make fecth call with built URL to API
     fetch(URL)
@@ -84,27 +48,26 @@ function List  (props)  {
       .then((data) => {
         // Retrieve the results from the fetch call, put results in the the list state
         let result = data.hits
-        console.log(result)
+        // Filter out any results that have no title or url listed
         let filterReslt = result.filter( item => {
-          if (item.title && item.url || item.story_title && item.story_url) {
-            return true
-          } else {
+          if (!item.title && !item.url && !item.story_title && !item.story_url) {
             return false
+          } else {
+            return true
           }
         })
+        // Put the results in the list state
         setList(filterReslt)
       })
 
-      // When the props change, this useEffect function will fire, causing list to re-render with the filtered results
-  }, [props.term, props.author, props.dateStart, props.dateEnd])
+      // props variables being watched to fire this function when they change
+  }, [search.query, search.searchType, search.searchTime, search.searchBy])
 
   return (
     <ul >
       {list.map((item, index) => {
-        console.log(item.url)
         return <li key={index}>
                   <div className="divcont">
-
                         <div className="firstRowLi" > 
                           <h4> {item.title ? item.title : item.story_title}</h4>
                           <a href={item.url ? item.url : item.story_url}>{item.url || item.story_url}</a>
@@ -119,12 +82,45 @@ function List  (props)  {
                           <p className="spacertag">|</p> 
                           <p className="commentstag"> {item.numComments} PLACEHOLDER comments</p>
                         </div>
-
                     </div>
                  </li>
       })}
     </ul>
   )
+}
+
+// Function to get time frame values in seconds
+const setTimeValues = (timeFrame) => {
+  // Date objects, both initially set for today
+  let end = new Date()
+  let start = new Date()
+  // Return object
+  let timeRange = {}
+
+  // Modify the start object date by the time frame requested
+  switch (timeFrame) {
+    case 'past_24':
+      start.setDate(start.getDate() - 1)      
+      break;
+    case 'past_week':
+      start.setDate(start.getDate() - 7)      
+      break;
+    case 'past_month':
+      start.setDate(start.getDate() - 31)      
+      break;
+    case 'past_year':
+      start.setDate(start.getDate() - 365)      
+      break;
+    default:
+      break;
+  }
+
+  // Convert the start and end objects will show time in miliseconds, convert them to seconds
+  timeRange.start = start / 1000
+  timeRange.end = end / 1000
+
+  // Return the timeRange object
+  return timeRange
 }
 
 export default List
